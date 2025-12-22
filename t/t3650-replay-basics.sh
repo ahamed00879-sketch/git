@@ -51,6 +51,22 @@ test_expect_success 'setup bare' '
 	git clone --bare . bare
 '
 
+test_expect_success '--onto with invalid commit-ish' '
+	cat >expect <<-EOF &&
+	fatal: ${SQ}refs/not-valid${SQ} is not a valid commit-ish
+	EOF
+	test_must_fail git replay --onto=refs/not-valid topic1..topic2 2>actual &&
+	test_cmp expect actual
+'
+
+test_expect_success '--advance with invalid commit-ish' '
+	cat >expect <<-EOF &&
+	fatal: ${SQ}refs/not-valid${SQ} is not a valid commit-ish
+	EOF
+	test_must_fail git replay --advance=refs/not-valid topic1..topic2 2>actual &&
+	test_cmp expect actual
+'
+
 test_expect_success 'using replay to rebase two branches, one on top of other' '
 	git replay --ref-action=print --onto main topic1..topic2 >result &&
 
